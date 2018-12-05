@@ -1,0 +1,25 @@
+#
+# OS generated files and junk
+#
+
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+Icon?
+.Trashes
+ehthumbs.db
+*.log
+
+#
+# PhpStorm
+#
+
+.idea
+
+#
+# Project
+#
+
+vendor
+composer.lock
