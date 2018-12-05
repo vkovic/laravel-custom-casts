@@ -17,7 +17,7 @@ If those default cast types are not enough and you want to make your own, you'r 
 
 ## Compatibility
 
-The package is compatible with Laravel versions `>= 5.1`
+The package is compatible with Laravel versions `>= 5.5`
 
 ## Installation
 
