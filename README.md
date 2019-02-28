@@ -36,7 +36,7 @@ When saving an image, there is two things that needs to be done:
 As a guidance for this example we'll use default Laravel user model found in `app/User.php`.
 
 Beside basic, predefined fields: `name`, `email` and `password`, we also want to allow user to upload his avatar. Assume
-that we already have `users` table with `image` field (you should create seeder for this).
+that we already have `users` table with `image` field (you should create migration for this).
 
 To utilize custom casts, we'll need to add trait to user model, and via `$casts` property link it to the cast class.
 
@@ -163,4 +163,21 @@ public function deleted()
 
 ```
 
-This should cover basics usage of custom casts.
+This should cover basic usage of custom casts.
+
+## Contributing
+
+If you plan to modify this Laravel package you should run tests that comes with it.
+Easiest way to accomplish this would be with `Docker`.
+
+First, we need to initialize Docker containers from package development directory using:
+
+```php
+docker-compose up
+```
+
+After that, in another terminal instance, we should run tests and watch output from the previous command.
+
+```php
+docker-compose exec app vendor/bin/phpunit
+```

@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: .docker/web/Dockerfile
+    volumes:
+      - ./:/var/www/html/
+
+#  db:
+#    image: mysql:5.7
+#    environment:
+#      MYSQL_ROOT_PASSWORD: root
+#      MYSQL_DATABASE: laravel-custom-casts
+#    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+#    ports:
+#      - 3306:3306
+
+  composer:
+    image: composer:1.8.3
+    volumes:
+      - .:/app
+    depends_on:
+      - app
+    command: install --ignore-platform-reqs --no-scripts
