@@ -15,7 +15,7 @@ class CreatePackageTestTable extends Migration
     {
         Schema::create('images', function (Blueprint $table) {
             $table->increments('id');
-            $table->text('image');
+            $table->text('image')->nullable();
             $table->text('data')->default('[]');
 
             $table->timestamps();

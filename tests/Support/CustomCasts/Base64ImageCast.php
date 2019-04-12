@@ -50,6 +50,18 @@ class Base64ImageCast extends CustomCastBase
     }
 
     /**
+     * Return placeholder in case there is no image in database
+     *
+     * @param mixed $value
+     *
+     * @return mixed
+     */
+    public function castAttribute($value)
+    {
+        return $value ?? 'placeholder.png';
+    }
+
+    /**
      * For some reason __call is not working so dedicate method to each model event
      */
 

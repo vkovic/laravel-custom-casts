@@ -127,6 +127,17 @@ class ModelCanUseCustomCastsTest extends TestCase
         $imageModel->delete();
     }
 
+    public function test_can_handle_unset_attribute()
+    {
+        $imageModel = Image::create([
+            'data' => []
+        ]);
+
+        $this->assertEquals('placeholder.png', $imageModel->image);
+
+        $imageModel->delete();
+    }
+
     protected static function getEventsReceived($imageModel)
     {
         $customCastObject = parent::getProtectedProperty($imageModel, 'customCastObjects')['image'];
