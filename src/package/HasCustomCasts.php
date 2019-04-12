@@ -24,7 +24,19 @@ trait HasCustomCasts
             /** @var self $model */
             $model = $data[0];
 
-            foreach ($model->filterCustomCasts() as $attribute => $customCastClass) {
+            // Array
+            // - key: model attribute (field name)
+            // - value: custom cast class name
+            $customCasts = $model->filterCustomCasts();
+
+            // Inject null in case attribute is not set on model instance
+            if ($eventName == 'saving') {
+                foreach (array_diff(array_keys($customCasts), array_keys($model->attributes)) as $attribute) {
+                    $model->attributes[$attribute] = null;
+                }
+            }
+
+            foreach ($customCasts as $attribute => $customCastClass) {
                 $customCastObject = $model->getCustomCastObject($attribute);
 
                 if (method_exists($customCastObject, $eventName)) {
