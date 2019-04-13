@@ -228,12 +228,12 @@ Easiest way to accomplish this would be with `Docker`, `docker-compose` and `php
 
 First, we need to initialize Docker containers:
 
-```php
+```bash
 docker-compose up -d
 ```
 
 After that, we can run tests and watch the output:
 
-```php
+```bash
 docker-compose exec app vendor/bin/phpunit
 ```
