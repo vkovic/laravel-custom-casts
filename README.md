@@ -165,18 +165,20 @@ public function deleted()
 
 This should cover basic usage of custom casts.
 
+---
+
 ## Contributing
 
 If you plan to modify this Laravel package you should run tests that comes with it.
-Easiest way to accomplish this would be with `Docker`.
+Easiest way to accomplish this would be with `Docker`, `docker-compose` and `phpunit`.
 
-First, we need to initialize Docker containers from package development directory using:
+First, we need to initialize Docker containers:
 
 ```php
-docker-compose up
+docker-compose up -d
 ```
 
-After that, in another terminal instance, we should run tests and watch output from the previous command.
+After that, we can run tests and watch the output:
 
 ```php
 docker-compose exec app vendor/bin/phpunit
