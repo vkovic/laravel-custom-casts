@@ -7,13 +7,9 @@
 
 ### Make your own custom cast type for Laravel model attributes
 
-By default, from version 5 Laravel supports attribute casting. If we define `$cast` property on our model, Laravel will
-help us convert defined attributes to common data types. Currently supported cast types (Laravel 5.6) are: `integer`,
-`real`, `float`, `double`, `string`, `boolean`, `object`, `array`, `collection`, `date`, `datetime` and `timestamp`.
+If we want to customize how data is mutated to be stored in database, retrieved from it and maybe perform some other logic along, we can use [Laravel default models accessors and mutators](https://laravel.com/docs/5.8/eloquent-mutators#accessors-and-mutators).
 
-What if we want to store serialized object in
-eloquent mutators and accessors
-If those default cast types are not enough and you want to make your own, you'r on the right track.
+On the other hand, if we want to define our custom class for casting specific data types or decoupling casting logic so we can use it in multiple models, custom cast package is here to help.
 
 ---
 
@@ -31,16 +27,58 @@ composer require vkovic/laravel-custom-casts
 
 ## Example: Casting User Image
 
-When saving an image, there is two things that needs to be done:
-1. Save image name (sometimes with path) into corresponding database field
-2. Save image physically on the disk
+>Handling project images is great example because it demonstrate full power of custom casts.
+We will use custom casts class setter (mutator), getter (accessor) and we'll react to some model events to
+physically remove and update image when image field on the model is changed.
 
-As a guidance for this example we'll use default Laravel user model found in `app/User.php`.
+### What needs to be done
 
-Beside basic, predefined fields: `name`, `email` and `password`, we also want to allow user to upload his avatar. Assume
-that we already have `users` table with `image` field (you should create migration for this).
+When saving the model:
+- save image path into corresponding database field
+- store image physically on the disk
 
-To utilize custom casts, we'll need to add trait to user model, and via `$casts` property link it to the cast class.
+When retrieving the image we need to handle:
+- retrieving image path from database
+- serving image placeholder when image is not set (`null` in database)
+
+When updating model image we need to:
+- save another image
+- delete previous image
+
+When deleting the model itself we should:
+- remove image physically from the filesystem
+
+All of the above can be simply handled with this package.
+
+### Preparing the project
+
+As a guidance for this example we'll use default Laravels user model found in `app/User.php`.
+Also for fully functional example you should create image placeholder in `public` directory (e.g. `public/placeholder.jpg`).
+
+Beside basic, predefined fields: `name`, `email` and `password`, we also want to allow user to upload his avatar.
+
+Alter user table migration and add `image` field.
+
+```php
+// File: database/migrations/2014_10_12_000000_create_users_table.php
+
+// ...
+
+Schema::create('users', function (Blueprint $table) {
+    $table->increments('id');
+    $table->string('name');
+    $table->string('email')->unique();
+    $table->string('image')->nullable(); // <= add this
+    $table->string('password');
+    $table->rememberToken();
+    $table->timestamps();
+});
+
+// ...
+
+```
+
+To utilize custom casts, we'll need to add trait to user model, and via `$casts` property link it to our class that will handle custom image cast.
 
 ```php
 // File: app/User.php
@@ -54,7 +92,7 @@ use Vkovic\LaravelCustomCasts\HasCustomCasts;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasCustomCasts;
+    use Notifiable, HasCustomCasts; // <= include package trait
 
     protected $fillable = [
         'name', 'email', 'password', 'image'
@@ -65,19 +103,18 @@ class User extends Authenticatable
     ];
 
     protected $casts = [
-        'image' => ImageCast::class
+        'image' => ImageCast::class // <= define custom cast class on model attribute
     ];
-}
 
-// ...
+    // ...
 ```
 
-Next step is to create class that'll handle casting. It must implement `setAttribute` method which will take care of
-saving the image (from UploadedFile object, via form upload in this case) and generating image name with path - to be preserved in database.
+Next step is to create class that'll handle casting (we already included it in above file as `ImageCast`). It must implement `setAttribute` method which will take care of
+saving the image (from `UploadedFile` object, via form upload in this case) and generating image name with path - to be preserved in database.
+
+Also we'll define `castAttribute` method which will take care of retrieving our image from database and in case there is no image, we'll return image placeholder.
 
 ```php
-// File: app/CustomCasts/ImageCast.php
-
 namespace App\CustomCasts;
 
 use Vkovic\LaravelCustomCasts\CustomCastBase;
@@ -85,11 +122,14 @@ use Illuminate\Http\UploadedFile;
 
 class ImageCast extends CustomCastBase
 {
+    // Setting the value from the model to the database field (mutator).
+    // Mutating value passed to model image attribute to the database field
+    // and performing image save.
     public function setAttribute($file)
     {
-        // Define storage folder
-        // (relative to "storage/app" folder in Laravel project)
-        // Don't forget to create it !!!
+        // Define storage folder (relative to `storage/app` folder in Laravel project)
+        // Don't forget to create it and link it to public directory
+        // (see https://laravel.com/docs/5.8/filesystem#the-public-disk)
         $storageDir = 'images';
 
         // Generate random image name
@@ -98,8 +138,20 @@ class ImageCast extends CustomCastBase
         // Save image to predefined folder
         $file->storeAs($storageDir, $filename);
 
-        // This will be stored in db field: "image"
+        // This will be stored in db field
         return $storageDir . '/' . $filename;
+    }
+
+    // Getting value from the database (accessor).
+    // `$value` variable will hold raw database value for the image field
+    public function castAttribute($value)
+    {
+        // Return image placeholder if there is no image
+        if ($value === null) {
+            return 'images/placeholder.png';
+        }
+
+        return $value;
     }
 }
 ```
@@ -118,29 +170,29 @@ own.
 
 protected function create(Request $request)
 {
-    User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => bcrypt($request->password),
-        // Past the whole Illuminate\Http\UploadedFile object,
-        // we'll handle it in our ImageCast class
-        'image' => $request->file('image')
-    ]);
+    $user = new User;
+
+    $user->name = $request->name;
+    $user->email = $request->email;
+    $user->password = bcrypt($request->password);
+
+    // Here, we're setting model image attribute to `UploadedFile` object.
+    // Actual saving will be handled in `ImageCast::setAttribute()`.
+    $user->image = $request->file('image');
+
+    $user->save();
 }
 
 // ...
 ```
 
-Visit corresponding route input basic details and attach the image. After that, we'll have our user created and image
-stored.
+Visit corresponding route, input basic details and attach the image.
+After that, we'll have our user created and image stored.
 
-But we should also handle deleting image when user is deleted. This can be accomplished by utilizing underlying eloquent
-events handling. Each time eloquent event is fired, logic will look up for public method with the same name in our custom
-cast class.
+But we should also handle deleting image when user is deleted. This can be accomplished by utilizing underlying eloquent events handling. Each time eloquent event is fired, logic will look up for public method with the same name in our custom cast class.
 
 Possible method names are:
-`retrieved`, `creating`, `created`, `updating`, `updated`, `saving`, `saved`, `deleting`, `deleted`, `restoring` and
-`restored`.
+`retrieved`, `creating`, `created`, `updating`, `updated`, `saving`, `saved`, `deleting`, `deleted`, `restoring` and `restored`, just like model event names.
 
 ```php
 // File: app/CustomCasts/ImageCast.php
