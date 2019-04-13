@@ -11,6 +11,8 @@ By default, from version 5 Laravel supports attribute casting. If we define `$ca
 help us convert defined attributes to common data types. Currently supported cast types (Laravel 5.6) are: `integer`,
 `real`, `float`, `double`, `string`, `boolean`, `object`, `array`, `collection`, `date`, `datetime` and `timestamp`.
 
+What if we want to store serialized object in
+eloquent mutators and accessors
 If those default cast types are not enough and you want to make your own, you'r on the right track.
 
 ---
