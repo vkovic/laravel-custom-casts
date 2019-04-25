@@ -27,11 +27,11 @@
   },
   "require": {
     "php": "^7.0",
-    "laravel/framework": "5.5.*|5.6.*|5.7.*"
+    "laravel/framework": "5.5.*|5.6.*|5.7.*|5.8.*"
   },
   "require-dev": {
-    "orchestra/testbench": "3.5.*|3.6.*|3.7.*",
-    "orchestra/database": "3.5.*|3.6.*|3.7.*",
+    "orchestra/testbench": "3.5.*|3.6.*|3.7.*|3.8.*",
+    "orchestra/database": "3.5.*|3.6.*|3.7.*|3.8.*",
     "phpunit/phpunit": "^6.3|^7.0"
   },
   "scripts": {
