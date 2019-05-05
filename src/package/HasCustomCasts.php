@@ -27,7 +27,7 @@ trait HasCustomCasts
             // Array
             // - key: model attribute (field name)
             // - value: custom cast class name
-            $customCasts = $model->filterCustomCasts();
+            $customCasts = $model->getCustomCasts();
 
             // Inject null in case attribute is not set on model instance
             if ($eventName == 'saving') {
@@ -67,7 +67,7 @@ trait HasCustomCasts
             return $this->{$method}($value);
         }
 
-        if (array_key_exists($attribute, $this->filterCustomCasts())) {
+        if (array_key_exists($attribute, $this->getCustomCasts())) {
             /** @var $customCastObject CustomCastBase */
             $customCastObject = $this->getCustomCastObject($attribute);
 
@@ -90,7 +90,7 @@ trait HasCustomCasts
      */
     protected function castAttribute($attribute, $value)
     {
-        if (array_key_exists($attribute, $this->filterCustomCasts())) {
+        if (array_key_exists($attribute, $this->getCustomCasts())) {
             $customCastObject = $this->getCustomCastObject($attribute);
 
             return $customCastObject->castAttribute($value);
@@ -125,7 +125,7 @@ trait HasCustomCasts
      * @return array - key: model attribute (field name)
      *               - value: custom cast class name
      */
-    protected function filterCustomCasts()
+    public function getCustomCasts()
     {
         $customCasts = [];
         foreach ($this->casts as $attribute => $castClass) {
