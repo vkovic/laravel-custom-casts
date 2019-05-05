@@ -138,6 +138,15 @@ class ModelCanUseCustomCastsTest extends TestCase
         $imageModel->delete();
     }
 
+    public function test_can_get_custom_cast_fields()
+    {
+        $imageModel = new Image();
+
+        $customCasts = ['image' => 'Vkovic\LaravelCustomCasts\Test\Support\CustomCasts\Base64ImageCast'];
+
+        $this->assertEquals($customCasts, $imageModel->getCustomCasts());
+    }
+
     protected static function getEventsReceived($imageModel)
     {
         $customCastObject = parent::getProtectedProperty($imageModel, 'customCastObjects')['image'];
