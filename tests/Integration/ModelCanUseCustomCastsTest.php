@@ -9,8 +9,10 @@ use Vkovic\LaravelCustomCasts\Test\TestCase;
 
 class ModelCanUseCustomCastsTest extends TestCase
 {
-
-    public function test_custom_casts_do_not_interfere_with_default_model_casts()
+    /**
+     * @test
+     */
+    public function custom_casts_do_not_interfere_with_default_model_casts()
     {
         $imageModel = new Image;
         $imageModel->image = 'data:image/png;image.png';
@@ -23,7 +25,10 @@ class ModelCanUseCustomCastsTest extends TestCase
         $imageModel->delete();
     }
 
-    public function test_model_events_will_be_handled_in_custom_cast_objects()
+    /**
+     * @test
+     */
+    public function model_events_will_be_handled_in_custom_cast_objects()
     {
         //
         // Creating
@@ -65,7 +70,10 @@ class ModelCanUseCustomCastsTest extends TestCase
         $this->assertContains('deleted', $eventsReceived);
     }
 
-    public function test_mutators_has_priority_over_custom_casts()
+    /**
+     * @test
+     */
+    public function mutators_has_priority_over_custom_casts()
     {
         $imageName = str_random() . '.png';
 
@@ -74,12 +82,14 @@ class ModelCanUseCustomCastsTest extends TestCase
         ]);
 
         $imageModel = ImageWithMutator::find($imageModel->id);
-        $this->assertEquals($imageName, $imageModel->image);
 
-        $imageModel->delete();
+        $this->assertEquals($imageName, $imageModel->image);
     }
 
-    public function test_can_cast_attribute_from_db()
+    /**
+     * @test
+     */
+    public function it_can_cast_attribute_from_db()
     {
         $imageName = str_random() . '.png';
 
@@ -90,11 +100,12 @@ class ModelCanUseCustomCastsTest extends TestCase
         $imageModel = ImageWithPrefixNameCast::find($imageModel->id);
 
         $this->assertStringStartsWith('casted_', $imageModel->image);
-
-        $imageModel->delete();
     }
 
-    public function test_can_set_attribute_during_model_creation()
+    /**
+     * @test
+     */
+    public function it_can_set_attribute_during_model_creation()
     {
         $imageName = str_random() . '.png';
 
@@ -104,12 +115,14 @@ class ModelCanUseCustomCastsTest extends TestCase
         ]);
 
         $imageModel = Image::find($imageModel->id);
-        $this->assertEquals($imageName, $imageModel->image);
 
-        $imageModel->delete();
+        $this->assertEquals($imageName, $imageModel->image);
     }
 
-    public function test_can_set_attribute_during_model_update()
+    /**
+     * @test
+     */
+    public function it_can_set_attribute_during_model_update()
     {
         $imageNameOne = str_random() . '.png';
         $imageNameTwo = str_random() . '.png';
@@ -122,23 +135,26 @@ class ModelCanUseCustomCastsTest extends TestCase
         $imageModel->save();
 
         $imageModel = Image::find($imageModel->id);
-        $this->assertEquals($imageNameTwo, $imageModel->image);
 
-        $imageModel->delete();
+        $this->assertEquals($imageNameTwo, $imageModel->image);
     }
 
-    public function test_can_handle_unset_attribute()
+    /**
+     * @test
+     */
+    public function it_can_handle_unset_attribute()
     {
         $imageModel = Image::create([
             'data' => []
         ]);
 
         $this->assertEquals('placeholder.png', $imageModel->image);
-
-        $imageModel->delete();
     }
 
-    public function test_can_get_custom_cast_fields()
+    /**
+     * @test
+     */
+    public function it_can_get_custom_cast_fields()
     {
         $imageModel = new Image();
 
