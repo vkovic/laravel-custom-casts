@@ -11,6 +11,14 @@ trait HasCustomCasts
      * @var array
      */
     protected $customCastObjects = [];
+    
+    /**
+     * Caches all attribute names with custom casts for
+     * improved performance.
+     *
+     * @var array
+     */
+    protected $customCasts = null;
 
     /**
      * Boot trait
@@ -127,6 +135,10 @@ trait HasCustomCasts
      */
     public function getCustomCasts()
     {
+        if (isset($this->customCasts)) {
+            return $this->customCasts;
+        }
+        
         $customCasts = [];
         foreach ($this->casts as $attribute => $castClass) {
             if (is_subclass_of($castClass, CustomCastBase::class)) {
@@ -134,6 +146,7 @@ trait HasCustomCasts
             }
         }
 
+        $this->customCasts = $customCasts;
         return $customCasts;
     }
 }
