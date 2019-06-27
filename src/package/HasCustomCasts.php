@@ -84,7 +84,7 @@ trait HasCustomCasts
             return $this;
         }
 
-        parent::setAttribute($attribute, $value);
+        return parent::setAttribute($attribute, $value);
     }
 
     /**
