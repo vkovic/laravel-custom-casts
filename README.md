@@ -15,11 +15,13 @@ For even more convenience our custom cast classes have ability to react to under
 >For example, this could be very useful if we're storing image with custom casts and we need to delete it
 >when model changes. See the [old documentation](https://github.com/vkovic/laravel-custom-casts/tree/v1.0.2#example-casting-user-image) for this examples.
 
-### :package: New package :package:
+### :package: :package: :package: ... Awesome new package ... :package: :package: :package:
 
-Checkout my new package [vkovic/laravel-commando](https://github.com/vkovic/laravel-commando).
+As we're near 1000 downloads of `laravel-custom-casts`, I decided to create one more handy and useful package. It's collection of some neat Laravel `artisan` commands that I'm sure most of you will find useful.
 
-It's collection of some really handy Laravel `artisan` commands that I'm sure most of you find useful.
+Check it out: [vkovic/laravel-commando](https://github.com/vkovic/laravel-commando)
+
+### :package: :package: :package: :package: :package: :package: :package: :package: :package: :package: :package: :package: :package: :package:
 
 ---
 
@@ -176,3 +178,23 @@ After that, we can run tests and watch the output:
 ```bash
 docker-compose exec app vendor/bin/phpunit
 ```
+
+You get used to this
+
+class
+
+public $casts = [
+    'active' => 'boolean'
+    'price' => 'decimal'
+    'published_at' => 'datetime'
+    ...
+
+]
+
+... but, wait, what if i want to use my own type beside those predefined .. and what if i want them to be more complex
+rather simiple int, float bla bla
+
+bear with me
+
+...
+
