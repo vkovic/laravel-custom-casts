@@ -15,6 +15,12 @@ For even more convenience our custom cast classes have ability to react to under
 >For example, this could be very useful if we're storing image with custom casts and we need to delete it
 >when model changes. See the [old documentation](https://github.com/vkovic/laravel-custom-casts/tree/v1.0.2#example-casting-user-image) for this examples.
 
+### :package: New package :package:
+
+Checkout my new package [vkovic/laravel-commando](https://github.com/vkovic/laravel-commando).
+
+It's collection of some really handy Laravel `artisan` commands that I'm sure most of you find useful.
+
 ---
 
 ## Compatibility
