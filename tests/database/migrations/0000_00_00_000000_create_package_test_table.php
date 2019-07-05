@@ -15,7 +15,8 @@ class CreatePackageTestTable extends Migration
     {
         Schema::create('images', function (Blueprint $table) {
             $table->increments('id');
-            $table->text('image')->nullable();
+            $table->text('image')->nullable(); // Nullable custom cast field
+            $table->text('thumb')->default('thumb_placeholder.png'); // Custom cast field with default value
             $table->text('data')->default('[]');
 
             $table->timestamps();

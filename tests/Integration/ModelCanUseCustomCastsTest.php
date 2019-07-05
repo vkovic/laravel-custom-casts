@@ -142,13 +142,35 @@ class ModelCanUseCustomCastsTest extends TestCase
     /**
      * @test
      */
-    public function it_can_handle_unset_attribute()
+    public function it_can_get_custom_cast_field_from_newly_created_model_when_refresh_is_called()
     {
-        $imageModel = Image::create([
-            'data' => []
-        ]);
+        // TODO
+        // https://github.com/vkovic/laravel-custom-casts/issues/5
+        // Until better solutions is found, we'll act upon decision from mentioned issue
+
+        $imageModel = Image::create(['thumb' => 'data:image/png;thumb_placeholder.png']);
+
+        $this->assertNull($imageModel->image);
+
+        $imageModel->refresh();
 
         $this->assertEquals('placeholder.png', $imageModel->image);
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_get_handle_custom_cast_field_with_db_default_value()
+    {
+        $imageModel = Image::create(['thumb' => 'data:image/png;thumb.png']);
+
+        $this->assertEquals('thumb.png', $imageModel->thumb);
+
+        $imageModelTwo = Image::create();
+
+        $imageModelTwo->refresh();
+
+        $this->assertEquals('thumb_placeholder.png', $imageModelTwo->thumb);
     }
 
     /**
@@ -158,7 +180,10 @@ class ModelCanUseCustomCastsTest extends TestCase
     {
         $imageModel = new Image();
 
-        $customCasts = ['image' => 'Vkovic\LaravelCustomCasts\Test\Support\CustomCasts\Base64ImageCast'];
+        $customCasts = [
+            'image' => 'Vkovic\LaravelCustomCasts\Test\Support\CustomCasts\Base64ImageCast',
+            'thumb' => 'Vkovic\LaravelCustomCasts\Test\Support\CustomCasts\Base64ImageCast',
+        ];
 
         $this->assertEquals($customCasts, $imageModel->getCustomCasts());
     }
