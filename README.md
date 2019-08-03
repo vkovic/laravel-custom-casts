@@ -178,23 +178,3 @@ After that, we can run tests and watch the output:
 ```bash
 docker-compose exec app vendor/bin/phpunit
 ```
-
-You get used to this
-
-class
-
-public $casts = [
-    'active' => 'boolean'
-    'price' => 'decimal'
-    'published_at' => 'datetime'
-    ...
-
-]
-
-... but, wait, what if i want to use my own type beside those predefined .. and what if i want them to be more complex
-rather simiple int, float bla bla
-
-bear with me
-
-...
-
