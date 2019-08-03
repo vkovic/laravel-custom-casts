@@ -1,3 +1,4 @@
+"illuminate/database": "5.5.*|5.6.*|5.7.*|5.8.*"
 # Laravel Custom Casts
 
 [![Build](https://api.travis-ci.org/vkovic/laravel-custom-casts.svg?branch=master)](https://travis-ci.org/vkovic/laravel-custom-casts)
