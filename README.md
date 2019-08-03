@@ -5,23 +5,35 @@
 [![Stable](https://poser.pugx.org/vkovic/laravel-custom-casts/v/stable)](https://packagist.org/packages/vkovic/laravel-custom-casts)
 [![License](https://poser.pugx.org/vkovic/laravel-custom-casts/license)](https://packagist.org/packages/vkovic/laravel-custom-casts)
 
-### Make your own custom cast type for Laravel model attributes
+### Make your own cast type for Laravel model attributes
 
-Laravel custom casts works similarly to [Laravel default accessors and mutators](https://laravel.com/docs/5.8/eloquent-mutators#accessors-and-mutators),
-but with one noticeable difference: we can take our casting/mutating logic (getters, setters) away from models and put it in separate class.
+Laravel custom casts works similarly to [Laravel attribute casting](https://laravel.com/docs/5.8/eloquent-mutators#attribute-casting), but with our customly defined logic (in separated class). Beside casting to
+our complex types this package gives us ability to listen and react to underlying model events.
 
-For even more convenience our custom cast classes have ability to react to underlying model events.
+Let's check out some common - Laravel default cast types and possible examples of their usage:
 
->For example, this could be very useful if we're storing image with custom casts and we need to delete it
->when model changes. See the [old documentation](https://github.com/vkovic/laravel-custom-casts/tree/v1.0.2#example-casting-user-image) for this examples.
+```php
+// File: app/User.php
 
-### :package: :package: :package: ... Awesome new package ... :package: :package: :package:
+namespace App;
 
-As we're near 1000 downloads of `laravel-custom-casts`, I decided to create one more handy and useful package. It's collection of some neat Laravel `artisan` commands that I'm sure most of you will find useful.
+use Illuminate\Database\Eloquent\Model;
 
-Check it out: [vkovic/laravel-commando](https://github.com/vkovic/laravel-commando)
+class User extends Model
+{
+    protected $casts = [
+        'is_admin' => 'boolean',
+        'login_count' => 'integer'
+        'height' => 'decimal:2'
+    ];
+}
+```
 
-### :package: :package: :package: :package: :package: :package: :package: :package: :package: :package: :package: :package: :package: :package:
+Beside `bolean`, `integer` and `decimal` from the example above, out of the box Laravel supports `real`, `float`, `double`, `string`, `object`, `array`, `collection`, `date`, `datetime`, and `timestamp` casts.
+
+Sometimes it is convenient to handle more complex types with custom logic and ability to listen and react to model events. This is where this package come in handy.
+
+>Handling events directly from custom casts could be very useful if we're, for e.g. storing image with custom casts and we need to delete it when the model gets deleted. *Checkout the [old documentation](https://github.com/vkovic/laravel-custom-casts/tree/v1.0.2#example-casting-user-image) for this example.*
 
 ---
 
@@ -40,6 +52,8 @@ composer require vkovic/laravel-custom-casts
 ## Usage
 
 ### Defining custom cast class
+
+This class will be responsible for our custom casting logic.
 
 ```php
 // File: app/CustomCasts/NameCast.php
@@ -77,9 +91,11 @@ when name is returned from database.
 ### Utilizing our custom casts class
 
 To enable custom casts in our models, we need to use `HasCustomCasts` trait.
-Beside that, we need to define which filed will use our custom cast class, following standard Laravel approach.
+Beside that, we need to define which filed will use our custom cast (in this case `NameCast` class), following standard Laravel approach.
 
 ```php
+// File: app/User.php
+
 namespace App;
 
 use App\CustomCasts\NameCast;
@@ -91,7 +107,7 @@ class User extends Model
     use HasCustomCasts;
 
     protected $casts = [
-        'name' => NameCast::class
+        'name' => NameCast::class // <-- Our custom cast class from above
     ];
 }
 ```

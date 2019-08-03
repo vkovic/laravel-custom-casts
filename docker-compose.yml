@@ -12,6 +12,4 @@ services:
     image: composer:1.8.3
     volumes:
       - .:/app
-    depends_on:
-      - app
     command: install --ignore-platform-reqs --no-scripts
