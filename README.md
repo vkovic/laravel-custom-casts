@@ -10,11 +10,9 @@
 Laravel custom casts works similarly to [Laravel attribute casting](https://laravel.com/docs/5.8/eloquent-mutators#attribute-casting), but with our customly defined logic (in separated class). Beside casting to
 our complex types this package gives us ability to listen and react to underlying model events.
 
-Let's check out some common - Laravel default cast types and possible examples of their usage:
+Let's check out some Laravel common cast types and possible example of their usage:
 
 ```php
-// File: app/User.php
-
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
