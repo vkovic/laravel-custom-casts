@@ -49,6 +49,30 @@ composer require vkovic/laravel-custom-casts
 
 ## Usage
 
+### Utilizing a custom casts class
+
+To enable custom casts in our models, we need to use `HasCustomCasts` trait and we need to define which filed will be casted - per Laravel standards.
+
+```php
+// File: app/User.php
+
+namespace App;
+
+use App\CustomCasts\NameCast;
+use Illuminate\Database\Eloquent\Model;
+use Vkovic\LaravelCustomCasts\HasCustomCasts;
+
+class User extends Model
+{
+    use HasCustomCasts;
+
+    protected $casts = [
+        'is_admin' => boolean // <-- Laravel default cast type
+        'name' => NameCast::class // <-- Our custom cast class (follow section below)
+    ];
+}
+```
+
 ### Defining custom cast class
 
 This class will be responsible for our custom casting logic.
@@ -86,31 +110,9 @@ Optional `getAttribute` method receives raw `$value` from database and should re
 For the sake of this example we'll implement one more method which will attach random title to our users
 when name is returned from database.
 
-### Utilizing our custom casts class
+### Let's test it
 
-To enable custom casts in our models, we need to use `HasCustomCasts` trait.
-Beside that, we need to define which filed will use our custom cast (in this case `NameCast` class), following standard Laravel approach.
-
-```php
-// File: app/User.php
-
-namespace App;
-
-use App\CustomCasts\NameCast;
-use Illuminate\Database\Eloquent\Model;
-use Vkovic\LaravelCustomCasts\HasCustomCasts;
-
-class User extends Model
-{
-    use HasCustomCasts;
-
-    protected $casts = [
-        'name' => NameCast::class // <-- Our custom cast class from above
-    ];
-}
-```
-
-Lets create example user and see what's happening.
+Let's create a user and see what will happen.
 
 ```php
 $user = new App\User;
@@ -122,7 +124,7 @@ $user->save();
 This will create our new user and his name will be stored in the database, first letters uppercased.
 
 When we retrieve our user and try to get his name, title will be prepended to it, just like we defined it
-in `NameCast` class.
+in our custom `NameCast` class.
 
 ```php
 dd($user->name); // 'Mr. John Doe'
@@ -130,7 +132,7 @@ dd($user->name); // 'Mr. John Doe'
 
 ### Handling model events
 
-Lets say that we want to notify our administrator when user name changes.
+Let's say that we want to notify our administrator when user name changes.
 
 ```php
 // File: app/CustomCasts/NameCast.php
