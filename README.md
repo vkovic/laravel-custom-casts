@@ -35,6 +35,18 @@ Sometimes it is convenient to handle more complex types with custom logic and ab
 
 ---
 
+### :package:
+
+Some time ago, when 1k downloads of this repo was near, I decided to make one more package. It's in early stage but you can check it or maybe even help me improve it.
+
+Basically it's a collection of Laravel `artisan` commands I've been using oftenly. So I decided to squeeze them into this interesting Laravel plugin.
+
+Check it out: [vkovic/laravel-commando](http://bit.ly/2GT7DV7)
+
+### :package:
+
+---
+
 ## Compatibility
 
 The package is compatible with Laravel versions `5.5`, `5.6`, `5.7` and `5.8`.
