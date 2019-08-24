@@ -49,7 +49,7 @@ Check it out: [vkovic/laravel-commando](http://bit.ly/2GT7DV7)
 
 ## Compatibility
 
-The package is compatible with Laravel versions `5.5`, `5.6`, `5.7` and `5.8`.
+The package is compatible with Laravel versions `5.5`, `5.6`, `5.7`, `5.8` and `6`.
 
 ## Installation
 
