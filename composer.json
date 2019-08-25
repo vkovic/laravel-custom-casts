@@ -17,7 +17,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "Vkovic\\LaravelCustomCasts\\": "src/package"
+      "Vkovic\\LaravelCustomCasts\\": "src"
     }
   },
   "autoload-dev": {
