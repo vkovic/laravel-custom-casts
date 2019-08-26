@@ -2,6 +2,8 @@
 
 namespace Vkovic\LaravelCustomCasts;
 
+use Illuminate\Events\Dispatcher;
+
 trait HasCustomCasts
 {
     /**
@@ -26,7 +28,7 @@ trait HasCustomCasts
     public static function bootHasCustomCasts()
     {
         // Enable custom cast classes to listen to model events
-        \Event::listen('eloquent.*: ' . get_called_class(), function ($event, $data) {
+        app(Dispatcher::class)->listen('eloquent.*: ' . get_called_class(), function ($event, $data) {
             $eventName = explode('.', explode(':', $event)[0])[1];
 
             /** @var self $model */

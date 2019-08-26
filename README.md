@@ -7,8 +7,7 @@
 
 ### Make your own cast type for Laravel model attributes
 
-Laravel custom casts works similarly to [Laravel attribute casting](https://laravel.com/docs/5.8/eloquent-mutators#attribute-casting), but with our customly defined logic (in separated class). Beside casting to
-our complex types this package gives us ability to listen and react to underlying model events.
+Laravel custom casts works similarly to [Laravel attribute casting](https://laravel.com/docs/5.8/eloquent-mutators#attribute-casting), but with our customly defined logic (in separated class). This means that we can use the same casting logic across our models - we might write [image upload logic](https://github.com/vkovic/laravel-custom-casts/tree/v1.0.2#example-casting-user-image) and use it everywhere. Beside casting to our custom types this package gives us ability to listen and react to underlying model events.
 
 Let's check out some Laravel common cast types and possible example of their usage:
 
@@ -35,21 +34,16 @@ Sometimes it is convenient to handle more complex types with custom logic and ab
 
 ---
 
-### :package:
+### :package: vkovic packages :package:
 
-Some time ago, when 1k downloads of this repo was near, I decided to make one more package. It's in early stage but you can check it or maybe even help me improve it.
+Please checkout my other packages - they are all free, well written and some of them are useful :smile:. If you find something interesting you might give me a hand for further package development, suggest an idea or some kind of improvement, star the repo if you like it or simply check out the code - there's a lot of useful stuff under the hood.
 
-Basically it's a collection of Laravel `artisan` commands I've been using oftenly. So I decided to squeeze them into this interesting Laravel plugin.
-
-Check it out: [vkovic/laravel-commando](http://bit.ly/2GT7DV7)
-
-### :package:
-
----
+- [**vkovic/laravel-commando**](http://bit.ly/2GT7DV7) ~ Collection of useful `artisan` commands
+- *Coming soon* [**vkovic/laravel-event-log**](http://bit.ly/2MFtCn8) ~ Easily log and access logged events, optionally with additional data and related model
 
 ## Compatibility
 
-The package is compatible with Laravel versions `5.5`, `5.6`, `5.7` and `5.8`.
+The package is compatible with **Laravel** and **Lumen** versions `5.5`, `5.6`, `5.7` and `5.8`.
 
 ## Installation
 
