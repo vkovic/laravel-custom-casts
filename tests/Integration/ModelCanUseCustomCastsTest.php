@@ -6,6 +6,7 @@ use Vkovic\LaravelCustomCasts\Test\Support\Models\Image;
 use Vkovic\LaravelCustomCasts\Test\Support\Models\ImageWithMutator;
 use Vkovic\LaravelCustomCasts\Test\Support\Models\ImageWithPrefixNameCast;
 use Vkovic\LaravelCustomCasts\Test\TestCase;
+use Illuminate\Support\Str;
 
 class ModelCanUseCustomCastsTest extends TestCase
 {
@@ -75,7 +76,7 @@ class ModelCanUseCustomCastsTest extends TestCase
      */
     public function mutators_has_priority_over_custom_casts()
     {
-        $imageName = str_random() . '.png';
+        $imageName = Str::random() . '.png';
 
         $imageModel = ImageWithMutator::create([
             'image' => $imageName
@@ -91,7 +92,7 @@ class ModelCanUseCustomCastsTest extends TestCase
      */
     public function it_can_cast_attribute_from_db()
     {
-        $imageName = str_random() . '.png';
+        $imageName = Str::random() . '.png';
 
         $imageModel = ImageWithPrefixNameCast::create([
             'image' => 'data:image/png;' . $imageName
@@ -107,7 +108,7 @@ class ModelCanUseCustomCastsTest extends TestCase
      */
     public function it_can_set_attribute_during_model_creation()
     {
-        $imageName = str_random() . '.png';
+        $imageName = Str::random() . '.png';
 
         $imageModel = Image::create([
             // This base64 string is not valid, used just for testing
@@ -124,8 +125,8 @@ class ModelCanUseCustomCastsTest extends TestCase
      */
     public function it_can_set_attribute_during_model_update()
     {
-        $imageNameOne = str_random() . '.png';
-        $imageNameTwo = str_random() . '.png';
+        $imageNameOne = Str::random() . '.png';
+        $imageNameTwo = Str::random() . '.png';
 
         $imageModel = Image::create([
             'image' => 'data:image/png;' . $imageNameOne

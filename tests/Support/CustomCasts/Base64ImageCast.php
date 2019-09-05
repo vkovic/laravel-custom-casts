@@ -2,6 +2,7 @@
 
 namespace Vkovic\LaravelCustomCasts\Test\Support\CustomCasts;
 
+use Illuminate\Support\Str;
 use Vkovic\LaravelCustomCasts\CustomCastBase;
 
 class Base64ImageCast extends CustomCastBase
@@ -25,7 +26,7 @@ class Base64ImageCast extends CustomCastBase
     public function setAttribute($value)
     {
         // Quickly determine if passed value is base 64 encoded string
-        if (starts_with($value, 'data:image')) {
+        if (Str::startsWith($value, 'data:image')) {
             // For testing purposes, we'll extract image content and name
             // from example base 64 string
             $name = explode(';', $value)[1];
