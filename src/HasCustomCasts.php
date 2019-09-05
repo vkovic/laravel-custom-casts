@@ -3,6 +3,7 @@
 namespace Vkovic\LaravelCustomCasts;
 
 use Illuminate\Events\Dispatcher;
+use Illuminate\Support\Str;
 
 trait HasCustomCasts
 {
@@ -60,7 +61,7 @@ trait HasCustomCasts
     {
         // Give mutator priority over custom casts
         if ($this->hasSetMutator($attribute)) {
-            $method = 'set' . studly_case($attribute) . 'Attribute';
+            $method = 'set' . Str::studly($attribute) . 'Attribute';
 
             return $this->{$method}($value);
         }
