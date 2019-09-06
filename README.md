@@ -43,7 +43,9 @@ Please checkout my other packages - they are all free, well written and some of 
 
 ## Compatibility
 
-The package is compatible with **Laravel** and **Lumen** versions `5.5`, `5.6`, `5.7`, `5.8` and `6`.
+The package is compatible with **Laravel** versions `5.5`, `5.6`, `5.7`, `5.8` and `6`
+
+and **Lumen** versions `5.5`, `5.6`, `5.7`, `5.8`.
 
 ## Installation
 
