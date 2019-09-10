@@ -112,7 +112,7 @@ trait HasCustomCasts
             return $this->customCastObjects[$attribute];
         }
 
-        $customCastClass = $this->casts[$attribute];
+        $customCastClass = $this->guessCastClassName($this->casts[$attribute]);
         $customCastObject = new $customCastClass($this, $attribute);
 
         return $this->customCastObjects[$attribute] = $customCastObject;
@@ -131,7 +131,8 @@ trait HasCustomCasts
         }
         
         $customCasts = [];
-        foreach ($this->casts as $attribute => $castClass) {
+        foreach ($this->casts as $attribute => $type) {
+            $castClass = $this->guessCastClassName($type);
             if (is_subclass_of($castClass, CustomCastBase::class)) {
                 $customCasts[$attribute] = $castClass;
             }
@@ -139,5 +140,22 @@ trait HasCustomCasts
 
         $this->customCasts = $customCasts;
         return $customCasts;
+    }
+
+    /**
+     * Guess the cast class name for the given identifier.
+     *
+     * @param  string $identifier
+     * @return string
+     */
+    protected function guessCastClassName($identifier)
+    {
+        $class = str_replace(' ', '', ucwords(str_replace('_', ' ', $identifier))) . 'Cast';
+        $classDirname = str_replace('/', '\\', dirname(str_replace('\\', '/', $class)));
+        $fqcn = $classDirname . '\\Casts\\' . $class;
+        
+        return class_exists($fqcn)
+            ? $fqcn
+            : $identifier;
     }
 }
