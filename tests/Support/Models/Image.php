@@ -15,7 +15,7 @@ class Image extends Model
 
     protected $casts = [
         'data' => 'array',
-        'image' => Base64ImageCast::class,
-        'thumb' => Base64ImageCast::class,
+        'image' => 'base64_image',
+        'thumb' => 'base64_image',
     ];
 }

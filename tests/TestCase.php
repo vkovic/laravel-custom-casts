@@ -5,6 +5,8 @@ namespace Vkovic\LaravelCustomCasts\Test;
 use Illuminate\Foundation\Application;
 use Orchestra\Database\ConsoleServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
+use Vkovic\LaravelCustomCasts\Test\Support\CustomCasts\PrefixNameCast;
+use Vkovic\LaravelCustomCasts\Test\Support\CustomCasts\Base64ImageCast;
 
 class TestCase extends OrchestraTestCase
 {
@@ -49,6 +51,9 @@ class TestCase extends OrchestraTestCase
             'driver' => 'sqlite',
             'database' => ':memory:',
         ]);
+
+        $app['config']->set('custom_casts.base64_image', Base64ImageCast::class);
+        $app['config']->set('custom_casts.prefix_name', PrefixNameCast::class);
     }
 
     /**
