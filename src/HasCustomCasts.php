@@ -151,8 +151,8 @@ trait HasCustomCasts
     protected function guessCastClassName($identifier)
     {
         $class = str_replace(' ', '', ucwords(str_replace('_', ' ', $identifier))) . 'Cast';
-        $classDirname = str_replace('/', '\\', dirname(str_replace('\\', '/', $class)));
-        $fqcn = $classDirname . '\\Casts\\' . $class;
+
+        $fqcn = app()->getNamespace() . 'Casts\\' . $class;
         
         return class_exists($fqcn)
             ? $fqcn
