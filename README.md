@@ -75,7 +75,7 @@ class User extends Model
     use HasCustomCasts;
 
     protected $casts = [
-        'is_admin' => boolean // <-- Laravel default cast type
+        'is_admin' => 'boolean', // <-- Laravel default cast type
         'name' => NameCast::class // <-- Our custom cast class (follow section below)
     ];
 }
