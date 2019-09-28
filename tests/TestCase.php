@@ -52,8 +52,7 @@ class TestCase extends OrchestraTestCase
             'database' => ':memory:',
         ]);
 
-        $app['config']->set('custom_casts.base64_image', Base64ImageCast::class);
-        $app['config']->set('custom_casts.prefix_name', PrefixNameCast::class);
+        $app['config']->set('custom-casts.b64image', Base64ImageCast::class);
     }
 
     /**

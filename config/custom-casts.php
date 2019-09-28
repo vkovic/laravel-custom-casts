@@ -10,7 +10,7 @@ return [
     | specifying the alias as the array key, and the fully qualified cast class 
     | name as the value. For example:
     |
-    | 'prefix_name' => PrefixNameCast::class,
+    | 'image' => ImageCast::class,
     |
     */
 ];

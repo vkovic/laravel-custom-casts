@@ -2,11 +2,12 @@
 
 namespace Vkovic\LaravelCustomCasts\Test\Integration;
 
+use Illuminate\Support\Str;
 use Vkovic\LaravelCustomCasts\Test\Support\Models\Image;
+use Vkovic\LaravelCustomCasts\Test\Support\Models\ImageWithHumanReadableCasts;
 use Vkovic\LaravelCustomCasts\Test\Support\Models\ImageWithMutator;
 use Vkovic\LaravelCustomCasts\Test\Support\Models\ImageWithPrefixNameCast;
 use Vkovic\LaravelCustomCasts\Test\TestCase;
-use Illuminate\Support\Str;
 
 class ModelCanUseCustomCastsTest extends TestCase
 {
@@ -187,6 +188,23 @@ class ModelCanUseCustomCastsTest extends TestCase
         ];
 
         $this->assertEquals($customCasts, $imageModel->getCustomCasts());
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_use_human_readable_casts()
+    {
+        $imageModel = new ImageWithHumanReadableCasts;
+        $imageModel->image = 'data:image/png;image.png';
+        $imageModel->data = ['size' => 1000];
+        $imageModel->save();
+
+        $imageModel = Image::find($imageModel->id);
+
+        $this->assertEquals('image.png', $imageModel->image);
+
+        $imageModel->delete();
     }
 
     protected static function getEventsReceived($imageModel)

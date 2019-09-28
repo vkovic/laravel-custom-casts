@@ -7,6 +7,6 @@ use Vkovic\LaravelCustomCasts\Test\Support\CustomCasts\PrefixNameCast;
 class ImageWithPrefixNameCast extends Image
 {
     protected $casts = [
-        'image' => 'prefix_name',
+        'image' => PrefixNameCast::class
     ];
 }

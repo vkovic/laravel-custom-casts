@@ -14,14 +14,15 @@ trait HasCustomCasts
      * @var array
      */
     protected $customCastObjects = [];
-    
+
     /**
-     * Caches all attribute names with custom casts for
-     * improved performance.
+     * Custom casts array
+     * - key: model attribute (field name)
+     * - value: custom cast class name
      *
      * @var array
      */
-    protected $customCasts = null;
+    protected $customCasts;
 
     /**
      * Boot trait
@@ -52,8 +53,6 @@ trait HasCustomCasts
      *
      * @param $attribute
      * @param $value
-     *
-     * @throws \Exception
      *
      * @return mixed
      */
@@ -107,15 +106,14 @@ trait HasCustomCasts
      */
     protected function getCustomCastObject($attribute)
     {
-        // Check if custom cast object already been set
-        if (isset($this->customCastObjects[$attribute])) {
-            return $this->customCastObjects[$attribute];
+        if (!isset($this->customCastObjects[$attribute])) {
+            $customCastClass = $this->getCastClass($this->casts[$attribute]);
+            $customCastObject = new $customCastClass($this, $attribute);
+
+            $this->customCastObjects[$attribute] = $customCastObject;
         }
 
-        $customCastClass = $this->getCastClass($this->casts[$attribute]);
-        $customCastObject = new $customCastClass($this, $attribute);
-
-        return $this->customCastObjects[$attribute] = $customCastObject;
+        return $this->customCastObjects[$attribute];
     }
 
     /**
@@ -126,34 +124,36 @@ trait HasCustomCasts
      */
     public function getCustomCasts()
     {
-        if (isset($this->customCasts)) {
+        if ($this->customCasts !== null) {
             return $this->customCasts;
         }
-        
+
         $customCasts = [];
+
         foreach ($this->casts as $attribute => $type) {
             $castClass = $this->getCastClass($type);
+
             if (is_subclass_of($castClass, CustomCastBase::class)) {
                 $customCasts[$attribute] = $castClass;
             }
         }
 
         $this->customCasts = $customCasts;
+
         return $customCasts;
     }
 
     /**
-     * Get the cast class name for the given identifier.
+     * Get the cast class name for the given cast type.
+     * Cast type can either be FQCN of custom cast class
+     * or user assigned alias defined in config.
      *
-     * @param  string $identifier
+     * @param string $castType
+     *
      * @return string
      */
-    protected function getCastClass($identifier)
+    protected function getCastClass($castType)
     {
-        $casts = config('custom_casts');
-
-        return is_array($casts) && isset($casts[$identifier])
-            ? $casts[$identifier]
-            : $identifier;
+        return config('custom-casts')[$castType] ?? $castType;
     }
 }
