@@ -15,7 +15,7 @@ class CanHandleModelEventsTest extends TestCase
     public function can_handle_creating_events()
     {
         $model = new ModelWithEventHandlingCast;
-        $model->field_1 = '';
+        $model->col_1 = '';
         $model->save();
 
         $eventsReceived = self::getEventsReceived($model);
@@ -30,10 +30,10 @@ class CanHandleModelEventsTest extends TestCase
     public function can_handle_updating_event()
     {
         // Manually create a record in db
-        DB::table('data')->insert(['field_1' => 'a']);
+        DB::table('table_a')->insert(['col_1' => 'a']);
 
         $model = ModelWithEventHandlingCast::first();
-        $model->field_1 = 'b';
+        $model->col_1 = 'b';
         $model->save();
 
         $eventsReceived = self::getEventsReceived($model);
@@ -48,7 +48,7 @@ class CanHandleModelEventsTest extends TestCase
     public function can_handle_deleting_events()
     {
         // Manually create a record in db
-        DB::table('data')->insert(['field_1' => '']);
+        DB::table('table_a')->insert(['col_1' => '']);
 
         $model = ModelWithEventHandlingCast::first();
         $model->delete();
@@ -61,7 +61,7 @@ class CanHandleModelEventsTest extends TestCase
 
     protected static function getEventsReceived(Model $model)
     {
-        $customCastObject = parent::getProtectedProperty($model, 'customCastObjects')['field_1'];
+        $customCastObject = parent::getProtectedProperty($model, 'customCastObjects')['col_1'];
 
         return $customCastObject->eventsReceived;
     }

@@ -18,14 +18,14 @@ class ModelWithAliasedCustomCastsTest extends TestCase
         $string = Str::random();
         $model = new ModelWithAliasedCustomCasts;
         $model->id = 2;
-        $model->field_1 = $string;
+        $model->col_1 = $string;
         $model->save();
 
         // Get raw data (as stdClass) without using `Model`
-        $data = DB::table('data')->find(2);
+        $data = DB::table('table_a')->find(2);
 
         // Raw data should be base 64 encoded string
-        $this->assertSame(base64_encode($string), $data->field_1);
+        $this->assertSame(base64_encode($string), $data->col_1);
     }
 
     /**
@@ -37,14 +37,14 @@ class ModelWithAliasedCustomCastsTest extends TestCase
         $b64String = base64_encode($string);
 
         // Save field directly without using `Model`
-        DB::table('data')->insert([
-            'field_1' => $b64String
+        DB::table('table_a')->insert([
+            'col_1' => $b64String
         ]);
 
         $model = ModelWithAliasedCustomCasts::first();
 
         // Retrieved data should be same as initial string
-        $this->assertSame($string, $model->field_1);
+        $this->assertSame($string, $model->col_1);
     }
 }
 

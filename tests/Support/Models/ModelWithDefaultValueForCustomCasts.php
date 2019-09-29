@@ -11,9 +11,9 @@ class ModelWithDefaultValueForCustomCasts extends Model
     use HasCustomCasts;
 
     protected $guarded = [];
-    protected $table = 'data_1';
+    protected $table = 'table_b';
 
     protected $casts = [
-        'field_1' => 'array'
+        'col_1' => Base64Cast::class
     ];
 }

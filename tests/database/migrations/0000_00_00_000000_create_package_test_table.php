@@ -13,29 +13,26 @@ class CreatePackageTestTable extends Migration
      */
     public function up()
     {
-        Schema::create('images', function (Blueprint $table) {
+        Schema::create('table_a', function (Blueprint $table) {
             $table->increments('id');
-            $table->text('image')->nullable(); // Nullable custom cast field
-            $table->text('thumb')->default('thumb_placeholder.png'); // Custom cast field with default value
-            $table->text('data')->default('[]');
+            $table->text('col_1');
 
             $table->timestamps();
         });
 
-        Schema::create('data', function (Blueprint $table) {
+        Schema::create('table_b', function (Blueprint $table) {
             $table->increments('id');
-            $table->text('field_1');
-            $table->text('field_2')->nullable();
+            $table->text('col_1')->default(base64_encode('col_1_value'));
 
             $table->timestamps();
         });
 
-//        Schema::create('data_1', function (Blueprint $table) {
-//            $table->increments('id');
-//            $table->text('field_1')->default(['test']);
-//
-//            $table->timestamps();
-//        });
+        Schema::create('table_c', function (Blueprint $table) {
+            $table->increments('id');
+            $table->text('col_1')->nullable();
+
+            $table->timestamps();
+        });
     }
 
     /**
@@ -45,6 +42,8 @@ class CreatePackageTestTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('data');
+        Schema::dropIfExists('table_a');
+        Schema::dropIfExists('table_b');
+        Schema::dropIfExists('table_c');
     }
 }
