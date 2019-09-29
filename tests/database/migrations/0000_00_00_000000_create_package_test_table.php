@@ -21,6 +21,21 @@ class CreatePackageTestTable extends Migration
 
             $table->timestamps();
         });
+
+        Schema::create('data', function (Blueprint $table) {
+            $table->increments('id');
+            $table->text('field_1');
+            $table->text('field_2')->nullable();
+
+            $table->timestamps();
+        });
+
+//        Schema::create('data_1', function (Blueprint $table) {
+//            $table->increments('id');
+//            $table->text('field_1')->default(['test']);
+//
+//            $table->timestamps();
+//        });
     }
 
     /**
@@ -30,6 +45,6 @@ class CreatePackageTestTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('images');
+        Schema::dropIfExists('data');
     }
 }
