@@ -14,8 +14,9 @@ class ModelWithAliasedCustomCastsTest extends TestCase
      */
     public function can_mutate_attribute_via_aliased_custom_casts()
     {
-        // Write model data via `Model` object with aliased casts
         $string = Str::random();
+
+        // Write model data via `Model` object with aliased casts
         $model = new ModelWithAliasedCustomCasts;
         $model->col_1 = $string;
         $model->save();

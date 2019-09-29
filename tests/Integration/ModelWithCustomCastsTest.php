@@ -17,9 +17,9 @@ class ModelWithCustomCastsTest extends TestCase
      */
     public function can_mutate_attribute_via_custom_casts()
     {
-        // Write model data via `Model` object
         $string = Str::random();
 
+        // Write model data via `Model` object
         $model = new ModelWithCustomCasts;
         $model->col_1 = $string;
         $model->save();
@@ -55,9 +55,9 @@ class ModelWithCustomCastsTest extends TestCase
      */
     public function can_mutate_attribute_via_custom_casts_when_using_create()
     {
-        // Write model data via `Model` object
         $string = Str::random();
 
+        // Write model data via `Model` object
         ModelWithCustomCasts::create([
             'col_1' => $string
         ]);
