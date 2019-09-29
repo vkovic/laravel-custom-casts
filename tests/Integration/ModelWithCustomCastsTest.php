@@ -100,7 +100,7 @@ class ModelWithCustomCastsTest extends TestCase
 
         $tableRow = DB::table('table_a')->first();
 
-        $this->assertEquals('mutated_via_mutator', $tableRow->col_1);
+        $this->assertSame('mutated_via_mutator', $tableRow->col_1);
     }
 
     /**
@@ -112,7 +112,7 @@ class ModelWithCustomCastsTest extends TestCase
 
         $model = ModelWithMutatorAndCustomCasts::first();
 
-        $this->assertEquals('accessed_via_accessor', $model->col_1);
+        $this->assertSame('accessed_via_accessor', $model->col_1);
     }
 
     /**
@@ -129,8 +129,8 @@ class ModelWithCustomCastsTest extends TestCase
             'col_1' => Base64Cast::class,
         ];
 
-        $this->assertEquals($customCasts, $model1->getCustomCasts());
-        $this->assertEquals($customCasts, $model2->getCustomCasts());
+        $this->assertSame($customCasts, $model1->getCustomCasts());
+        $this->assertSame($customCasts, $model2->getCustomCasts());
     }
 }
 
