@@ -8,6 +8,14 @@ class EventHandlingCast extends CustomCastBase
 {
     public $eventsReceived = [];
 
+    /**
+     * This class serves only for sake of event testing,
+     * so mutating of value is not performed.
+     *
+     * @param mixed $value
+     *
+     * @return mixed
+     */
     public function setAttribute($value)
     {
         return $value;

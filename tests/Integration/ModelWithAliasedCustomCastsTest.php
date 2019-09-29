@@ -17,15 +17,14 @@ class ModelWithAliasedCustomCastsTest extends TestCase
         // Write model data via `Model` object with aliased casts
         $string = Str::random();
         $model = new ModelWithAliasedCustomCasts;
-        $model->id = 2;
         $model->col_1 = $string;
         $model->save();
 
         // Get raw data (as stdClass) without using `Model`
-        $data = DB::table('table_a')->find(2);
+        $tableRow = DB::table('table_a')->first();
 
         // Raw data should be base 64 encoded string
-        $this->assertSame(base64_encode($string), $data->col_1);
+        $this->assertSame(base64_encode($string), $tableRow->col_1);
     }
 
     /**

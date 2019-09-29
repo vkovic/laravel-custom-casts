@@ -13,6 +13,8 @@ class Base64Cast extends CustomCastBase
 
     public function castAttribute($value)
     {
-        return base64_decode($value);
+        return $value !== null
+            ? base64_decode($value)
+            : null;
     }
 }

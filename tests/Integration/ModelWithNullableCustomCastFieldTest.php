@@ -11,13 +11,13 @@ class ModelWithNullableCustomCastFieldTest extends TestCase
     /**
      * @test
      */
-    public function can_mutate_nullable_custom_cast_field()
+    public function nullable_custom_cast_field_will_remain_null_when_field_not_present()
     {
         $model = new ModelWithNullableValueForCustomCasts();
         $model->save(); // Save with null value (defined in migrations)
 
-        $data = DB::table('table_c')->first();
+        $tableRow = DB::table('table_c')->first();
 
-        $this->assertNull($data->col_1);
+        $this->assertNull($tableRow->col_1);
     }
 }
