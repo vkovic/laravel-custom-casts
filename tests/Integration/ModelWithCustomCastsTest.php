@@ -10,7 +10,6 @@ use Vkovic\LaravelCustomCasts\Test\Support\Models\ImageWithMutator;
 use Vkovic\LaravelCustomCasts\Test\Support\Models\ModelWithAliasedCustomCasts;
 use Vkovic\LaravelCustomCasts\Test\Support\Models\ModelWithCustomCasts;
 use Vkovic\LaravelCustomCasts\Test\Support\Models\ModelWithMutatorAndCustomCasts;
-use Vkovic\LaravelCustomCasts\Test\Support\Models\ModelWithNullableValueForCustomCasts;
 use Vkovic\LaravelCustomCasts\Test\TestCase;
 
 class ModelWithCustomCastsTest extends TestCase
@@ -51,6 +50,45 @@ class ModelWithCustomCastsTest extends TestCase
 
         // Retrieved data should be same as initial string
         $this->assertSame($string, $model->col_1);
+    }
+
+    /**
+     * @test
+     */
+    public function can_mutate_attribute_via_custom_casts_when_using_create()
+    {
+        // Write model data via `Model` object
+        $string = Str::random();
+
+        ModelWithCustomCasts::create([
+            'col_1' => $string
+        ]);
+
+        // Get raw data (as stdClass) without using `Model`
+        $tableRow = DB::table('table_a')->find(1);
+
+        // Raw data should be base 64 encoded string
+        $this->assertSame(base64_encode($string), $tableRow->col_1);
+    }
+
+    /**
+     * @test
+     */
+    public function can_update_custom_cast_attribute()
+    {
+        DB::table('table_a')->insert([
+            'col_1' => ''
+        ]);
+
+        $string = Str::random();
+
+        $model = ModelWithCustomCasts::first();
+        $model->col_1 = $string;
+        $model->save();
+
+        $tableRow = DB::table('table_a')->first();
+
+        $this->assertSame(base64_encode($string), $tableRow->col_1);
     }
 
     /**
@@ -100,50 +138,6 @@ class ModelWithCustomCastsTest extends TestCase
     //
     // NOT DONE
     //
-
-    public function custom_casts_do_not_interfere_with_default_model_casts()
-    {
-        $imageModel = new Image;
-        $imageModel->image = 'data:image/png;image.png';
-        $imageModel->data = ['size' => 1000];
-        $imageModel->save();
-
-        $imageModel = Image::find($imageModel->id);
-        $this->assertTrue(is_array($imageModel->data));
-
-        $imageModel->delete();
-    }
-
-    public function it_can_set_attribute_during_model_creation()
-    {
-        $imageName = Str::random() . '.png';
-
-        $imageModel = Image::create([
-            // This base64 string is not valid, used just for testing
-            'image' => 'data:image/png;' . $imageName,
-        ]);
-
-        $imageModel = Image::find($imageModel->id);
-
-        $this->assertEquals($imageName, $imageModel->image);
-    }
-
-    public function it_can_set_attribute_during_model_update()
-    {
-        $imageNameOne = Str::random() . '.png';
-        $imageNameTwo = Str::random() . '.png';
-
-        $imageModel = Image::create([
-            'image' => 'data:image/png;' . $imageNameOne
-        ]);
-
-        $imageModel->image = 'data:image/png;' . $imageNameTwo;
-        $imageModel->save();
-
-        $imageModel = Image::find($imageModel->id);
-
-        $this->assertEquals($imageNameTwo, $imageModel->image);
-    }
 
     public function it_can_get_custom_cast_field_from_newly_created_model_when_refresh_is_called()
     {
