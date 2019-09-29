@@ -5,8 +5,6 @@ namespace Vkovic\LaravelCustomCasts\Test\Integration;
 use DB;
 use Illuminate\Support\Str;
 use Vkovic\LaravelCustomCasts\Test\Support\CustomCasts\Base64Cast;
-use Vkovic\LaravelCustomCasts\Test\Support\Models\Image;
-use Vkovic\LaravelCustomCasts\Test\Support\Models\ImageWithMutator;
 use Vkovic\LaravelCustomCasts\Test\Support\Models\ModelWithAliasedCustomCasts;
 use Vkovic\LaravelCustomCasts\Test\Support\Models\ModelWithCustomCasts;
 use Vkovic\LaravelCustomCasts\Test\Support\Models\ModelWithMutatorAndCustomCasts;
@@ -134,26 +132,6 @@ class ModelWithCustomCastsTest extends TestCase
         $this->assertEquals($customCasts, $model1->getCustomCasts());
         $this->assertEquals($customCasts, $model2->getCustomCasts());
     }
-
-    //
-    // NOT DONE
-    //
-
-    public function it_can_get_custom_cast_field_from_newly_created_model_when_refresh_is_called()
-    {
-        // TODO
-        // https://github.com/vkovic/laravel-custom-casts/issues/5
-        // Until better solutions is found, we'll act upon decision from mentioned issue
-
-        $imageModel = Image::create(['thumb' => 'data:image/png;thumb_placeholder.png']);
-
-        $this->assertNull($imageModel->image);
-
-        $imageModel->refresh();
-
-        $this->assertEquals('placeholder.png', $imageModel->image);
-    }
-
 }
 
 
