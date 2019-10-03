@@ -61,7 +61,7 @@ trait HasCustomCasts
     {
         // Give mutator priority over custom casts
         if ($this->hasSetMutator($attribute)) {
-            $method = 'set' . Str::studly($attribute) . 'Attribute';
+            $method = sprintf('set%sAttribute', Str::studly($attribute));
 
             return $this->{$method}($value);
         }
@@ -136,8 +136,7 @@ trait HasCustomCasts
                 $customCasts[$attribute] = $castClass;
             }
         }
-
-        $this->customCasts = $customCasts;
-        return $customCasts;
+        
+        return $this->customCasts = $customCasts;
     }
 }
