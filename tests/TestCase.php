@@ -3,36 +3,24 @@
 namespace Vkovic\LaravelCustomCasts\Test;
 
 use Illuminate\Foundation\Application;
-use Orchestra\Database\ConsoleServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
+use Vkovic\LaravelCustomCasts\Test\Support\CustomCasts\Base64Cast;
+use function Vkovic\LaravelCustomCasts\package_path;
 
 class TestCase extends OrchestraTestCase
 {
     /**
      * Setup the test environment.
      *
+     * @return void
      * @throws \Exception
      *
-     * @return void
      */
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
-    }
-
-    /**
-     * Trick to add migration only for testing,
-     * and not the one from package service provider
-     *
-     * @param Application $app
-     *
-     * @return string
-     */
-    protected function getPackageProviders($app)
-    {
-        return ConsoleServiceProvider::class;
+        $this->loadMigrationsFrom(package_path('tests/database/migrations'));
     }
 
     /**
@@ -49,6 +37,8 @@ class TestCase extends OrchestraTestCase
             'driver' => 'sqlite',
             'database' => ':memory:',
         ]);
+
+        $app['config']->set('custom-casts.base64', Base64Cast::class);
     }
 
     /**

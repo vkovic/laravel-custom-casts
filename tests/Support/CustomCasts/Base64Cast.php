@@ -4,15 +4,17 @@ namespace Vkovic\LaravelCustomCasts\Test\Support\CustomCasts;
 
 use Vkovic\LaravelCustomCasts\CustomCastBase;
 
-class PrefixNameCast extends CustomCastBase
+class Base64Cast extends CustomCastBase
 {
     public function setAttribute($value)
     {
-        return $value;
+        return base64_encode($value);
     }
 
     public function castAttribute($value)
     {
-        return 'casted_' . $value;
+        return $value !== null
+            ? base64_decode($value)
+            : null;
     }
 }
