@@ -27,6 +27,6 @@ class CustomCastsServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom(package_path('config/custom-casts.php'), 'custom-casts');
+        $this->mergeConfigFrom(package_path('config/custom_casts.php'), 'custom_casts');
     }
 }

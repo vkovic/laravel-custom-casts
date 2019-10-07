@@ -154,6 +154,6 @@ trait HasCustomCasts
      */
     protected function getCastClass($castType)
     {
-        return config('custom-casts')[$castType] ?? $castType;
+        return config('custom_casts')[$castType] ?? $castType;
     }
 }
