@@ -32,7 +32,6 @@ Sometimes it is convenient to handle more complex types with custom logic and ab
 
 >Handling events directly from custom casts could be very useful if we're, for e.g. storing image with custom casts and we need to delete it when the model gets deleted. *Checkout the [old documentation](https://github.com/vkovic/laravel-custom-casts/tree/v1.0.2#example-casting-user-image) for this example.*
 
----
 
 ### :package: vkovic packages :package:
 
@@ -158,15 +157,37 @@ public function updated()
 Beside `updated` method, we can as well create other methods for standard model events:
 `retrieved`, `creating`, `created`, `updating`, `saving`, `saved`, `deleting`, `deleted`, `restoring` and `restored`.
 
+### Other functionality
+
+As you can assume from code above, we can easily access casted attribute name as well as instance of underlying model.
+
+```php
+// File: app/CustomCasts/NameCast.php
+
+// Get model attribute name being casted
+dd($this->attribute); // 'name'
+
+// Access our `User` model
+dd(get_class($this->model)); // 'App/User'
+```
+
+Beside this we can retrieve all casted attributes and their corresponding classes directly from our model.
+
+```php
+// File: app/User.php
+
+dd($this->getCustomCasts()); // ['name' => 'App/CustomCasts/NameCast']
+```
+
 ### Using aliased casts
 
 If you find easier to use aliased custom casts, in other words:
 
 ```php
 protected $casts = [
-    'avatar' => 'image' // <-- You prefear this ...
+    'avatar' => 'image' // <-- You prefer this ...
     // ---
-    'avatar' => ImageCast::class // <-- ... over of this
+    'avatar' => ImageCast::class // <-- ... over this
 ];
 ```
 
@@ -193,36 +214,10 @@ After provider is added, we should publish the config which will be used to conn
 php artisan vendor:publish --provider="Vkovic\LaravelCustomCasts\CustomCastsServiceProvider"
 ```
 
-This command should create config file located at `config/custom_casts.php`. Inspect it and everything else should be clear.
+This command should create config file located at `config/custom_casts.php`. Inspect it and everything else should be clear. 
 
-### Other functionality
-
-As you can assume from code above, we can easily access casted attribute name as well as instance of underlying model.
-
-```php
-// File: app/CustomCasts/NameCast.php
-
-// Get model attribute name being casted
-dd($this->attribute); // 'name'
-
-// Access our `User` model
-dd(get_class($this->model)); // 'App/User'
-```
-
-Beside this we can retrieve all casted attributes and their corresponding classes directly from our model.
-
-```php
-// File: app/User.php
-
-dd($this->getCustomCasts()); // ['name' => 'App/CustomCasts/NameCast']
-```
- 
-
-### More examples
-
-You can find more examples on the [old documentation](https://github.com/vkovic/laravel-custom-casts/tree/v1.0.2#example-casting-user-image).
-
----
+> #### More examples
+> You can find more examples on the [old documentation](https://github.com/vkovic/laravel-custom-casts/tree/v1.0.2#example-casting-user-image).
 
 ## Contributing
 
