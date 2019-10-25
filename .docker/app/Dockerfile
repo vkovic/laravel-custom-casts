@@ -1,7 +1,7 @@
 # Native image
 FROM php:7.2-cli
 
-# Enable debuging
+# Enable debugging
 RUN mv /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
 
 # Set default workdir
