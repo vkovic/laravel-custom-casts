@@ -7,9 +7,9 @@
 
 ### Make your own cast type for Laravel model attributes
 
-Laravel custom casts works similarly to [Laravel attribute casting](https://laravel.com/docs/5.8/eloquent-mutators#attribute-casting), but with our customly defined logic (in separated class). This means that we can use the same casting logic across our models - we might write [image upload logic](https://github.com/vkovic/laravel-custom-casts/tree/v1.0.2#example-casting-user-image) and use it everywhere. Beside casting to our custom types this package gives us ability to listen and react to underlying model events.
+Laravel custom casts works similarly to [Eloquent attribute casting](https://laravel.com/docs/6.x/eloquent-mutators#attribute-casting), but with custom-defined logic (in a separate class). This means we can use the same casting logic across multiple models — we might write [image upload logic](https://github.com/vkovic/laravel-custom-casts/tree/v1.0.2#example-casting-user-image) and use it everywhere. In addition to casting to custom types, this package allows custom casts to listen and react to underlying model events.
 
-Let's check out some Laravel common cast types and possible example of their usage:
+Let's review some Laravel common cast types and examples of their usage:
 
 ```php
 namespace App;
@@ -26,19 +26,19 @@ class User extends Model
 }
 ```
 
-Beside `bolean`, `integer` and `decimal` from the example above, out of the box Laravel supports `real`, `float`, `double`, `string`, `object`, `array`, `collection`, `date`, `datetime`, and `timestamp` casts.
+In addition to `boolean`, `integer`, and `decimal`, out of the box Laravel supports `real`, `float`, `double`, `string`, `object`, `array`, `collection`, `date`, `datetime`, and `timestamp` casts.
 
-Sometimes it is convenient to handle more complex types with custom logic and ability to listen and react to model events. This is where this package come in handy.
+Sometimes it is convenient to handle more complex types with custom logic, and for casts to be able to listen and react to model events. This is where this package come in handy.
 
->Handling events directly from custom casts could be very useful if we're, for e.g. storing image with custom casts and we need to delete it when the model gets deleted. *Checkout the [old documentation](https://github.com/vkovic/laravel-custom-casts/tree/v1.0.2#example-casting-user-image) for this example.*
+>Handling events directly from custom casts can be very useful if, for example, we're storing an image using a custom casts and we need to delete it when the model is deleted. *Check out the [old documentation](https://github.com/vkovic/laravel-custom-casts/tree/v1.0.2#example-casting-user-image) for this example.*
 
 
 ### :package: vkovic packages :package:
 
-Please checkout my other packages - they are all free, well written and some of them are useful :smile:. If you find something interesting you might give me a hand for further package development, suggest an idea or some kind of improvement, star the repo if you like it or simply check out the code - there's a lot of useful stuff under the hood.
+Please check out my other packages — they are all free, well-written, and some of them are useful :smile:. If you find something interesting, consider giving me a hand with package development, suggesting an idea or some kind of improvement, starring the repo if you like it, or simply check out the code - there's a lot of useful stuff under the hood.
 
 - [**vkovic/laravel-commando**](http://bit.ly/2GT7DV7) ~ Collection of useful `artisan` commands
-- *Coming soon* [**vkovic/laravel-event-log**](http://bit.ly/2MFtCn8) ~ Easily log and access logged events, optionally with additional data and related model
+- *Coming soon* [**vkovic/laravel-event-log**](http://bit.ly/2MFtCn8) ~ Easily log and access logged events, optionally with additional data and the related model
 
 ## Compatibility
 
@@ -48,7 +48,7 @@ and **Lumen** versions `5.5`, `5.6`, `5.7`, `5.8`.
 
 ## Installation
 
-Install the package via composer:
+Install the package via Composer:
 
 ```bash
 composer require vkovic/laravel-custom-casts
@@ -56,9 +56,9 @@ composer require vkovic/laravel-custom-casts
 
 ## Usage
 
-### Utilizing a custom casts class
+### Utilizing a custom cast class
 
-To enable custom casts in our models, we need to use `HasCustomCasts` trait and we need to define which filed will be casted - per Laravel standards.
+To enable custom casts in a model, use the `HasCustomCasts` trait and define which attributes will be casted using `$casts` - per Laravel standards.
 
 ```php
 // File: app/User.php
@@ -75,12 +75,12 @@ class User extends Model
 
     protected $casts = [
         'is_admin' => 'boolean', // <-- Laravel default cast type
-        'name' => NameCast::class // <-- Our custom cast class (follow section below)
+        'name' => NameCast::class // <-- Our custom cast class (see the section below)
     ];
 }
 ```
 
-### Defining custom cast class
+### Defining a custom cast class
 
 This class will be responsible for our custom casting logic.
 
@@ -110,16 +110,15 @@ class NameCast extends CustomCastBase
 }
 ```
 
-Required `setAttribute` method receives `$value` that we're setting on our model field and should return raw value that we want to store in our database.
+The required `setAttribute` method receives the `$value` being set on the model field, and should return a raw value to store in the database.
 
-Optional `getAttribute` method receives raw `$value` from database and should return mutated value. If we omit this method, raw value from database will be returned.
+The optional `getAttribute` method receives the raw `$value` from the database, and should return a mutated value. If this method is omitted, the raw database value will be returned.
 
-For the sake of this example we'll implement one more method which will attach random title to our users
-when name is returned from database.
+For the sake of this example we'll implement one more method which will attach a random title to a user when their name is retrieved from database.
 
-### Let's test it
+### Testing a custom cast class
 
-Let's create a user and see what will happen.
+Let's create a user and see what happens.
 
 ```php
 $user = new App\User;
@@ -128,10 +127,9 @@ $user->name = 'john doe';
 $user->save();
 ```
 
-This will create our new user and his name will be stored in the database, first letters uppercased.
+This will create our new user and store their name in the database, with the first letter of each word uppercased.
 
-When we retrieve our user and try to get his name, title will be prepended to it, just like we defined it
-in our custom `NameCast` class.
+When we retrieve the user and try to access their name, title will be prepended to it — just like we defined in our custom `NameCast` class.
 
 ```php
 dd($user->name); // 'Mr. John Doe'
@@ -139,7 +137,7 @@ dd($user->name); // 'Mr. John Doe'
 
 ### Handling model events
 
-Let's say that we want to notify our administrator when user name changes.
+Let's say that we want to notify our administrator when a user's name changes.
 
 ```php
 // File: app/CustomCasts/NameCast.php
@@ -154,24 +152,24 @@ public function updated()
 }
 ```
 
-Beside `updated` method, we can as well create other methods for standard model events:
+In addition to the `updated` method, we can define other methods for standard model events:
 `retrieved`, `creating`, `created`, `updating`, `saving`, `saved`, `deleting`, `deleted`, `restoring` and `restored`.
 
 ### Other functionality
 
-As you can assume from code above, we can easily access casted attribute name as well as instance of underlying model.
+As you can see from the above code, we can easily access the casted attribute name as well as an instance of the underlying model.
 
 ```php
 // File: app/CustomCasts/NameCast.php
 
-// Get model attribute name being casted
+// Get the name of the model attribute being casted
 dd($this->attribute); // 'name'
 
 // Access our `User` model
 dd(get_class($this->model)); // 'App/User'
 ```
 
-Beside this we can retrieve all casted attributes and their corresponding classes directly from our model.
+We can also retrieve all casted attributes and their corresponding classes directly from the model.
 
 ```php
 // File: app/User.php
@@ -181,7 +179,7 @@ dd($this->getCustomCasts()); // ['name' => 'App/CustomCasts/NameCast']
 
 ### Using aliased casts
 
-If you find easier to use aliased custom casts, in other words:
+You may find it easier to use aliases for custom casts, e.g.:
 
 ```php
 protected $casts = [
@@ -191,7 +189,7 @@ protected $casts = [
 ];
 ```
 
-To make the magic happens, we need to add service provider to `providers` array:
+To make the magic happen, first add the package's service provider to the `providers` array:
 
 ```php
 // File: config/app.php
@@ -208,29 +206,29 @@ To make the magic happens, we need to add service provider to `providers` array:
 ]
 ```
 
-After provider is added, we should publish the config which will be used to connect our aliases with corresponding custom cast classes:
+Once the provider is added, publish the config file which will be used to associate aliases with their corresponding custom cast classes:
 
 ```bash
 php artisan vendor:publish --provider="Vkovic\LaravelCustomCasts\CustomCastsServiceProvider"
 ```
 
-This command should create config file located at `config/custom_casts.php`. Inspect it and everything else should be clear. 
+This command should create a config file located at `config/custom_casts.php`. Open it up and check out the comments for examples of config options.
 
 > #### More examples
-> You can find more examples on the [old documentation](https://github.com/vkovic/laravel-custom-casts/tree/v1.0.2#example-casting-user-image).
+> You can find more examples in the [old documentation](https://github.com/vkovic/laravel-custom-casts/tree/v1.0.2#example-casting-user-image).
 
 ## Contributing
 
-If you plan to modify this Laravel package you should run tests that comes with it.
-Easiest way to accomplish this would be with `Docker`, `docker-compose` and `phpunit`.
+If you plan to modify this Laravel package you should run the tests that come with it.
+The easiest way to accomplish this is with `Docker`, `docker-compose`, and `phpunit`.
 
-First, we need to initialize Docker containers:
+First, initialize the Docker containers:
 
 ```bash
 docker-compose up -d
 ```
 
-After that, we can run tests and watch the output:
+Then you can run the tests and watch the output:
 
 ```bash
 docker-compose exec app vendor/bin/phpunit
