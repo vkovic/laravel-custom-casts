@@ -7,7 +7,7 @@
 
 ### Make your own cast type for Laravel model attributes
 
-Laravel custom casts works similarly to [Eloquent attribute casting](https://laravel.com/docs/5.8/eloquent-mutators#attribute-casting), but with custom-defined logic (in a separate class). This means we can use the same casting logic across multiple models — we might write [image upload logic](https://github.com/vkovic/laravel-custom-casts/tree/v1.0.2#example-casting-user-image) and use it everywhere. In addition to casting to custom types, this package allows custom casts to listen and react to underlying model events.
+Laravel custom casts works similarly to [Eloquent attribute casting](https://laravel.com/docs/6.x/eloquent-mutators#attribute-casting), but with custom-defined logic (in a separate class). This means we can use the same casting logic across multiple models — we might write [image upload logic](https://github.com/vkovic/laravel-custom-casts/tree/v1.0.2#example-casting-user-image) and use it everywhere. In addition to casting to custom types, this package allows custom casts to listen and react to underlying model events.
 
 Let's review some Laravel common cast types and examples of their usage:
 
