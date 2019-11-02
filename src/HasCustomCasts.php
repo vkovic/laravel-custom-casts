@@ -61,7 +61,7 @@ trait HasCustomCasts
         }
 
         if ($this->isCustomCasts($attribute)) {
-            $this->attributes[$attribute] = $this->getCustomCastObject($attribute)->setAttribute($value);
+            $this->attributes[$attribute] = $this->setCustomCast($attribute, $value);
 
             return $this;
         }
@@ -108,10 +108,36 @@ trait HasCustomCasts
     protected function castAttribute($attribute, $value)
     {
         if ($this->isCustomCasts($attribute)) {
-            return $this->getCustomCastObject($attribute)->castAttribute($value);
+            return $this->castCustomCast($attribute, $value);
         }
 
         return parent::castAttribute($attribute, $value);
+    }
+
+    /**
+     * Cast attribute (from db value to our custom format)
+     *
+     * @param $attribute
+     * @param $value
+     *
+     * @return mixed|null
+     */
+    protected function castCustomCast($attribute, $value)
+    {
+        return $this->getCustomCastObject($attribute)->castAttribute($value);
+    }
+
+    /**
+     * Cast attribute (from db value to our custom format)
+     *
+     * @param $attribute
+     * @param $value
+     *
+     * @return mixed|null
+     */
+    protected function setCustomCast($attribute, $value)
+    {
+        return $this->getCustomCastObject($attribute)->setAttribute($value);
     }
 
     /**
