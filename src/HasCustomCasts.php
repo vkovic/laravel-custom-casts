@@ -26,21 +26,40 @@ trait HasCustomCasts
      */
     public static function bootHasCustomCasts()
     {
-        // Enable custom cast classes to listen to model events
-        self::registerModelEvent('*', static function ($event, $data) {
-            $eventName = explode('.', explode(':', $event)[0])[1];
+        // When registering a custom cast trait, we will spin through the custom casts
+        // attributes and possible observable events and determine if this custom cast
+        // has that method. If it does, we will hook it into the model's event system,
+        // making it convenient to watch these and remove per attribute if needed.
+        $instance = new static;
 
-            /** @var self $model */
-            [$model] = $data;
+        $observableEvents = $instance->getObservableEvents();
 
-            foreach ($model->getCustomCasts() as $attribute => $customCastClass) {
-                $customCastObject = $model->getCustomCastObject($attribute);
+        foreach ($instance->getCustomCasts() as $attribute => $customCastClass) {
+            $customCastObject = $instance->getCustomCastObject($attribute);
 
-                if (method_exists($customCastObject, $eventName)) {
-                    $customCastObject->$eventName();
+            foreach ($observableEvents as $event) {
+                if (method_exists($customCastObject, $event)) {
+                    self::registerListenerForAttribute($event, $attribute);
                 }
             }
-        });
+        }
+    }
+
+    /**
+     * Registers event listener for specific custom cast attribute
+     *
+     * @param string $event
+     * @param string $attribute
+     */
+    private static function registerListenerForAttribute($event, $attribute): void
+    {
+        static::registerModelEvent(
+            $event,
+            /** @param self $model */
+            static function ($model) use ($attribute, $event) {
+                $model->getCustomCastObject($attribute)->$event();
+            }
+        );
     }
 
     /**
@@ -52,6 +71,8 @@ trait HasCustomCasts
      * @param $value
      *
      * @return mixed
+     *
+     * @see \Illuminate\Database\Eloquent\Concerns\HasAttributes::setAttribute()
      */
     public function setAttribute($attribute, $value)
     {
@@ -104,6 +125,8 @@ trait HasCustomCasts
      *
      *
      * @return mixed|null
+     *
+     * @see \Illuminate\Database\Eloquent\Concerns\HasAttributes::castAttribute()
      */
     protected function castAttribute($attribute, $value)
     {
