@@ -112,7 +112,7 @@ class NameCast extends CustomCastBase
 
 The required `setAttribute` method receives the `$value` being set on the model field, and should return a raw value to store in the database.
 
-The optional `getAttribute` method receives the raw `$value` from the database, and should return a mutated value. If this method is omitted, the raw database value will be returned.
+The optional `castAttribute` method receives the raw `$value` from the database, and should return a mutated value. If this method is omitted, the raw database value will be returned.
 
 For the sake of this example we'll implement one more method which will attach a random title to a user when their name is retrieved from database.
 
