@@ -2,9 +2,6 @@
 
 namespace Vkovic\LaravelCustomCasts;
 
-use Illuminate\Events\Dispatcher;
-use Illuminate\Support\Str;
-
 trait HasCustomCasts
 {
     /**
@@ -29,21 +26,40 @@ trait HasCustomCasts
      */
     public static function bootHasCustomCasts()
     {
-        // Enable custom cast classes to listen to model events
-        app(Dispatcher::class)->listen('eloquent.*: ' . get_called_class(), function ($event, $data) {
-            $eventName = explode('.', explode(':', $event)[0])[1];
+        // When registering a custom cast trait, we will spin through the custom casts
+        // attributes and possible observable events and determine if this custom cast
+        // has that method. If it does, we will hook it into the model's event system,
+        // making it convenient to watch these and remove per attribute if needed.
+        $instance = new static;
 
-            /** @var self $model */
-            $model = $data[0];
+        $observableEvents = $instance->getObservableEvents();
 
-            foreach ($model->getCustomCasts() as $attribute => $customCastClass) {
-                $customCastObject = $model->getCustomCastObject($attribute);
+        foreach ($instance->getCustomCasts() as $attribute => $customCastClass) {
+            $customCastObject = $instance->getCustomCastObject($attribute);
 
-                if (method_exists($customCastObject, $eventName)) {
-                    $customCastObject->$eventName();
+            foreach ($observableEvents as $event) {
+                if (method_exists($customCastObject, $event)) {
+                    self::registerListenerForAttribute($event, $attribute);
                 }
             }
-        });
+        }
+    }
+
+    /**
+     * Registers event listener for specific custom cast attribute
+     *
+     * @param string $event
+     * @param string $attribute
+     */
+    protected static function registerListenerForAttribute($event, $attribute): void
+    {
+        static::registerModelEvent(
+            $event,
+            /** @param self $model */
+            static function ($model) use ($attribute, $event) {
+                $model->getCustomCastObject($attribute)->$event();
+            }
+        );
     }
 
     /**
@@ -55,65 +71,23 @@ trait HasCustomCasts
      * @param $value
      *
      * @return mixed
+     *
+     * @see \Illuminate\Database\Eloquent\Concerns\HasAttributes::setAttribute()
      */
     public function setAttribute($attribute, $value)
     {
         // Give mutator priority over custom casts
         if ($this->hasSetMutator($attribute)) {
-            $method = 'set' . Str::studly($attribute) . 'Attribute';
-
-            return $this->{$method}($value);
+            return $this->setMutatedAttributeValue($attribute, $value);
         }
 
-        if (array_key_exists($attribute, $this->getCustomCasts())) {
-            /** @var $customCastObject CustomCastBase */
-            $customCastObject = $this->getCustomCastObject($attribute);
-
-            $this->attributes[$attribute] = $customCastObject->setAttribute($value);
+        if ($this->isCustomCasts($attribute)) {
+            $this->attributes[$attribute] = $this->setCustomCast($attribute, $value);
 
             return $this;
         }
 
         return parent::setAttribute($attribute, $value);
-    }
-
-    /**
-     * Cast attribute (from db value to our custom format)
-     *
-     * @param $attribute
-     * @param $value
-     *
-     *
-     * @return mixed|null
-     */
-    protected function castAttribute($attribute, $value)
-    {
-        if (array_key_exists($attribute, $this->getCustomCasts())) {
-            $customCastObject = $this->getCustomCastObject($attribute);
-
-            return $customCastObject->castAttribute($value);
-        }
-
-        return parent::castAttribute($attribute, $value);
-    }
-
-    /**
-     * Lazy load custom cast object and return it
-     *
-     * @param $attribute
-     *
-     * @return CustomCastBase
-     */
-    protected function getCustomCastObject($attribute)
-    {
-        if (!isset($this->customCastObjects[$attribute])) {
-            $customCastClass = $this->getCastClass($this->casts[$attribute]);
-            $customCastObject = new $customCastClass($this, $attribute);
-
-            $this->customCastObjects[$attribute] = $customCastObject;
-        }
-
-        return $this->customCastObjects[$attribute];
     }
 
     /**
@@ -144,6 +118,82 @@ trait HasCustomCasts
     }
 
     /**
+     * Cast attribute (from db value to our custom format)
+     *
+     * @param $attribute
+     * @param $value
+     *
+     *
+     * @return mixed|null
+     *
+     * @see \Illuminate\Database\Eloquent\Concerns\HasAttributes::castAttribute()
+     */
+    protected function castAttribute($attribute, $value)
+    {
+        if ($this->isCustomCasts($attribute)) {
+            return $this->castCustomCast($attribute, $value);
+        }
+
+        return parent::castAttribute($attribute, $value);
+    }
+
+    /**
+     * Cast attribute (from db value to our custom format)
+     *
+     * @param $attribute
+     * @param $value
+     *
+     * @return mixed|null
+     */
+    protected function castCustomCast($attribute, $value)
+    {
+        return $this->getCustomCastObject($attribute)->castAttribute($value);
+    }
+
+    /**
+     * Cast attribute (from db value to our custom format)
+     *
+     * @param $attribute
+     * @param $value
+     *
+     * @return mixed|null
+     */
+    protected function setCustomCast($attribute, $value)
+    {
+        return $this->getCustomCastObject($attribute)->setAttribute($value);
+    }
+
+    /**
+     * Returns true if attribute is custom cast
+     *
+     * @param $attribute
+     * @return bool
+     */
+    protected function isCustomCasts($attribute): bool
+    {
+        return array_key_exists($attribute, $this->getCustomCasts());
+    }
+
+    /**
+     * Lazy load custom cast object and return it
+     *
+     * @param $attribute
+     *
+     * @return \Vkovic\LaravelCustomCasts\CustomCastBase
+     */
+    protected function getCustomCastObject($attribute)
+    {
+        if (!isset($this->customCastObjects[$attribute])) {
+            $customCastClass = $this->getCastClass($this->casts[$attribute]);
+            $customCastObject = new $customCastClass($this, $attribute);
+
+            $this->customCastObjects[$attribute] = $customCastObject;
+        }
+
+        return $this->customCastObjects[$attribute];
+    }
+
+    /**
      * Get the cast class name for the given cast type.
      * Cast type can either be FQCN of custom cast class
      * or user assigned alias defined in config.
@@ -154,6 +204,6 @@ trait HasCustomCasts
      */
     protected function getCastClass($castType)
     {
-        return config('custom_casts')[$castType] ?? $castType;
+        return config("custom_casts.$castType", $castType);
     }
 }
