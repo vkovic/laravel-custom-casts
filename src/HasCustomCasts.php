@@ -51,7 +51,7 @@ trait HasCustomCasts
      * @param string $event
      * @param string $attribute
      */
-    private static function registerListenerForAttribute($event, $attribute): void
+    protected static function registerListenerForAttribute($event, $attribute): void
     {
         static::registerModelEvent(
             $event,
