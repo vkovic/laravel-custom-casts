@@ -46,6 +46,9 @@ The package is compatible with **Laravel** versions `5.5`, `5.6`, `5.7`, `5.8` a
 
 and **Lumen** versions `5.5`, `5.6`, `5.7`, `5.8`.
 
+Minimum supported version of PHP is `7.1`. 
+PHP `8` is also supported.
+
 ## Installation
 
 Install the package via Composer:
