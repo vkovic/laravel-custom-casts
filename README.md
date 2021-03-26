@@ -1,6 +1,3 @@
-# What is different about this fork
-This fork does not require you to make use of the `config()` function. This is useful if you are using eloquent + custom casts without Laravel
-
 # Laravel Custom Casts
 
 [![Build](https://api.travis-ci.org/vkovic/laravel-custom-casts.svg?branch=master)](https://travis-ci.org/vkovic/laravel-custom-casts)
