@@ -225,14 +225,14 @@ This command should create a config file located at `config/custom_casts.php`. O
 If you plan to modify this Laravel package you should run the tests that come with it.
 The easiest way to accomplish this is with `Docker`, `docker-compose`, and `phpunit`.
 
-First, initialize the Docker containers:
+First, we need to initialize Docker container (see `docker-composer.yaml` for details).
 
 ```bash
-docker-compose up -d
+docker-compose up --exit-code-from app
 ```
 
-Then you can run the tests and watch the output:
+After that, we can run tests and watch the output:
 
 ```bash
-docker-compose exec app vendor/bin/phpunit
+docker-compose run --rm app phpunit
 ```

@@ -7,9 +7,8 @@ services:
       dockerfile: .docker/app/Dockerfile
     volumes:
       - ./:/var/www/html/
-
-  composer:
-    image: composer:1.8.3
-    volumes:
-      - .:/app
-    command: install --ignore-platform-reqs --no-scripts
+    command:
+      - /bin/bash
+      - -c
+      - |
+        [ -d vendor/bin ] || composer install
