@@ -167,6 +167,7 @@ trait HasCustomCasts
      * Returns true if attribute is custom cast
      *
      * @param $attribute
+     *
      * @return bool
      */
     protected function isCustomCasts($attribute): bool
@@ -204,10 +205,8 @@ trait HasCustomCasts
      */
     protected function getCastClass($castType)
     {
-        if(function_exists('config')) {
-            return config("custom_casts.$castType", $castType);
-        } else {
-            return $castType;
-        }
+        return function_exists('config')
+            ? config("custom_casts.$castType", $castType)
+            : $castType;
     }
 }

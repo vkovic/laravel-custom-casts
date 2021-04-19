@@ -217,6 +217,11 @@ php artisan vendor:publish --provider="Vkovic\LaravelCustomCasts\CustomCastsServ
 
 This command should create a config file located at `config/custom_casts.php`. Open it up and check out the comments for examples of config options.
 
+### Use it without Laravel
+
+This package can also be used without full Laravel installation, with something like `jenssegers/model` or if your project 
+is using `illuminate/database` library.
+
 > #### More examples
 > You can find more examples in the [old documentation](https://github.com/vkovic/laravel-custom-casts/tree/v1.0.2#example-casting-user-image).
 

@@ -2,8 +2,6 @@
 
 namespace Vkovic\LaravelCustomCasts;
 
-use Illuminate\Database\Eloquent\Model;
-
 abstract class CustomCastBase
 {
     /**
