@@ -204,6 +204,10 @@ trait HasCustomCasts
      */
     protected function getCastClass($castType)
     {
-        return config("custom_casts.$castType", $castType);
+        if(function_exists('config')) {
+            return config("custom_casts.$castType", $castType);
+        } else {
+            return $castType;
+        }
     }
 }
